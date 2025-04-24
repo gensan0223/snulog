@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package logs;
+
+option go_package = "github.com/gensan0223/snulog/proto/logs;logs";
+
+service LogService {
+    rpc FetchLogs(FetchRequest) returns (FetchResponse);
+}
+
+message FetchRequest { 
+    string team_id = 1;
+}
+
+message LogEntry {
+    string user_name = 1;
+    string status = 2;
+    string feeling = 3;
+    string timestamp = 4;
+}
+
+message FetchResponse { 
+    repeated LogEntry logs = 1;
+}

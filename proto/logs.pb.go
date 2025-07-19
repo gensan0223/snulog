@@ -4,7 +4,7 @@
 // 	protoc        v5.28.2
 // source: proto/logs.proto
 
-package logs
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -181,19 +181,19 @@ var File_proto_logs_proto protoreflect.FileDescriptor
 
 const file_proto_logs_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/logs.proto\x12\x04logs\"'\n" +
+	"\x10proto/logs.proto\x12\x05proto\"'\n" +
 	"\fFetchRequest\x12\x17\n" +
 	"\ateam_id\x18\x01 \x01(\tR\x06teamId\"w\n" +
 	"\bLogEntry\x12\x1b\n" +
 	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\afeeling\x18\x03 \x01(\tR\afeeling\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\"3\n" +
-	"\rFetchResponse\x12\"\n" +
-	"\x04logs\x18\x01 \x03(\v2\x0e.logs.LogEntryR\x04logs2B\n" +
+	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\"4\n" +
+	"\rFetchResponse\x12#\n" +
+	"\x04logs\x18\x01 \x03(\v2\x0f.proto.LogEntryR\x04logs2D\n" +
 	"\n" +
-	"LogService\x124\n" +
-	"\tFetchLogs\x12\x12.logs.FetchRequest\x1a\x13.logs.FetchResponseB)Z'github.com/gensan0223/snulog/proto/logsb\x06proto3"
+	"LogService\x126\n" +
+	"\tFetchLogs\x12\x13.proto.FetchRequest\x1a\x14.proto.FetchResponseB$Z\"github.com/gensan0223/snulog/protob\x06proto3"
 
 var (
 	file_proto_logs_proto_rawDescOnce sync.Once
@@ -209,14 +209,14 @@ func file_proto_logs_proto_rawDescGZIP() []byte {
 
 var file_proto_logs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_proto_logs_proto_goTypes = []any{
-	(*FetchRequest)(nil),  // 0: logs.FetchRequest
-	(*LogEntry)(nil),      // 1: logs.LogEntry
-	(*FetchResponse)(nil), // 2: logs.FetchResponse
+	(*FetchRequest)(nil),  // 0: proto.FetchRequest
+	(*LogEntry)(nil),      // 1: proto.LogEntry
+	(*FetchResponse)(nil), // 2: proto.FetchResponse
 }
 var file_proto_logs_proto_depIdxs = []int32{
-	1, // 0: logs.FetchResponse.logs:type_name -> logs.LogEntry
-	0, // 1: logs.LogService.FetchLogs:input_type -> logs.FetchRequest
-	2, // 2: logs.LogService.FetchLogs:output_type -> logs.FetchResponse
+	1, // 0: proto.FetchResponse.logs:type_name -> proto.LogEntry
+	0, // 1: proto.LogService.FetchLogs:input_type -> proto.FetchRequest
+	2, // 2: proto.LogService.FetchLogs:output_type -> proto.FetchResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

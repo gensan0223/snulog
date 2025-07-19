@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package logs;
+package proto;
 
-option go_package = "github.com/gensan0223/snulog/proto/logs;logs";
+option go_package = "github.com/gensan0223/snulog/proto";
 
 service LogService {
     rpc FetchLogs(FetchRequest) returns (FetchResponse);

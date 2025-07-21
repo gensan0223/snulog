@@ -15,6 +15,12 @@ type mockLogServer struct {
 	pb.UnimplementedLogServiceServer
 }
 
+func (s *mockLogServer) AddLogs(ctx context.Context, entry *pb.LogEntry) (*pb.AddResponse, error) {
+	log.Printf("Received AddLog entry: %+v", entry)
+
+	return &pb.AddResponse{Message: "added successfully"}, nil
+}
+
 func (s *mockLogServer) FetchLogs(ctx context.Context, req *pb.FetchRequest) (*pb.FetchResponse, error) {
 	log.Printf("Received FetchLogs request for team: %s", req.TeamId)
 

@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-package proto;
+package logs;
 
-option go_package = "github.com/gensan0223/snulog/proto";
+option go_package = "/proto";
 
 service LogService {
+    rpc AddLogs(LogEntry) returns (AddResponse);
     rpc FetchLogs(FetchRequest) returns (FetchResponse);
 }
 
@@ -19,6 +20,11 @@ message LogEntry {
     string timestamp = 4;
 }
 
+message AddResponse {
+    string message = 1;
+}
+
 message FetchResponse { 
     repeated LogEntry logs = 1;
 }
+

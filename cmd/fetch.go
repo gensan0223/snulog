@@ -8,6 +8,7 @@ import (
 	pb "github.com/gensan0223/snulog/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // fetchCmd represents the fetch command
@@ -15,7 +16,7 @@ var fetchCmd = &cobra.Command{
 	Use:   "fetch",
 	Short: "チームメンバーの進捗と感情ログを取得する",
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			fmt.Println("⛔gRPC接続失敗: ", err)
 			return
@@ -24,7 +25,7 @@ var fetchCmd = &cobra.Command{
 
 		client := pb.NewLogServiceClient(conn)
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
 		resp, err := client.FetchLogs(ctx, &pb.FetchRequest{

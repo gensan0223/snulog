@@ -19,13 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LogService_FetchLogs_FullMethodName = "/proto.LogService/FetchLogs"
+	LogService_AddLogs_FullMethodName   = "/logs.LogService/AddLogs"
+	LogService_FetchLogs_FullMethodName = "/logs.LogService/FetchLogs"
 )
 
 // LogServiceClient is the client API for LogService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LogServiceClient interface {
+	AddLogs(ctx context.Context, in *LogEntry, opts ...grpc.CallOption) (*AddResponse, error)
 	FetchLogs(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error)
 }
 
@@ -35,6 +37,16 @@ type logServiceClient struct {
 
 func NewLogServiceClient(cc grpc.ClientConnInterface) LogServiceClient {
 	return &logServiceClient{cc}
+}
+
+func (c *logServiceClient) AddLogs(ctx context.Context, in *LogEntry, opts ...grpc.CallOption) (*AddResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddResponse)
+	err := c.cc.Invoke(ctx, LogService_AddLogs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *logServiceClient) FetchLogs(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error) {
@@ -51,6 +63,7 @@ func (c *logServiceClient) FetchLogs(ctx context.Context, in *FetchRequest, opts
 // All implementations must embed UnimplementedLogServiceServer
 // for forward compatibility.
 type LogServiceServer interface {
+	AddLogs(context.Context, *LogEntry) (*AddResponse, error)
 	FetchLogs(context.Context, *FetchRequest) (*FetchResponse, error)
 	mustEmbedUnimplementedLogServiceServer()
 }
@@ -62,6 +75,9 @@ type LogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLogServiceServer struct{}
 
+func (UnimplementedLogServiceServer) AddLogs(context.Context, *LogEntry) (*AddResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddLogs not implemented")
+}
 func (UnimplementedLogServiceServer) FetchLogs(context.Context, *FetchRequest) (*FetchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchLogs not implemented")
 }
@@ -86,6 +102,24 @@ func RegisterLogServiceServer(s grpc.ServiceRegistrar, srv LogServiceServer) {
 	s.RegisterService(&LogService_ServiceDesc, srv)
 }
 
+func _LogService_AddLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogEntry)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServiceServer).AddLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LogService_AddLogs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServiceServer).AddLogs(ctx, req.(*LogEntry))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LogService_FetchLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FetchRequest)
 	if err := dec(in); err != nil {
@@ -108,9 +142,13 @@ func _LogService_FetchLogs_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LogService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.LogService",
+	ServiceName: "logs.LogService",
 	HandlerType: (*LogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddLogs",
+			Handler:    _LogService_AddLogs_Handler,
+		},
 		{
 			MethodName: "FetchLogs",
 			Handler:    _LogService_FetchLogs_Handler,

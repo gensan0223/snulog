@@ -133,6 +133,50 @@ func (x *LogEntry) GetTimestamp() string {
 	return ""
 }
 
+type AddResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddResponse) Reset() {
+	*x = AddResponse{}
+	mi := &file_proto_logs_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddResponse) ProtoMessage() {}
+
+func (x *AddResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_logs_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddResponse.ProtoReflect.Descriptor instead.
+func (*AddResponse) Descriptor() ([]byte, []int) {
+	return file_proto_logs_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AddResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type FetchResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Logs          []*LogEntry            `protobuf:"bytes,1,rep,name=logs,proto3" json:"logs,omitempty"`
@@ -142,7 +186,7 @@ type FetchResponse struct {
 
 func (x *FetchResponse) Reset() {
 	*x = FetchResponse{}
-	mi := &file_proto_logs_proto_msgTypes[2]
+	mi := &file_proto_logs_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -154,7 +198,7 @@ func (x *FetchResponse) String() string {
 func (*FetchResponse) ProtoMessage() {}
 
 func (x *FetchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_logs_proto_msgTypes[2]
+	mi := &file_proto_logs_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -167,7 +211,7 @@ func (x *FetchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FetchResponse.ProtoReflect.Descriptor instead.
 func (*FetchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_logs_proto_rawDescGZIP(), []int{2}
+	return file_proto_logs_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *FetchResponse) GetLogs() []*LogEntry {
@@ -181,19 +225,22 @@ var File_proto_logs_proto protoreflect.FileDescriptor
 
 const file_proto_logs_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/logs.proto\x12\x05proto\"'\n" +
+	"\x10proto/logs.proto\x12\x04logs\"'\n" +
 	"\fFetchRequest\x12\x17\n" +
 	"\ateam_id\x18\x01 \x01(\tR\x06teamId\"w\n" +
 	"\bLogEntry\x12\x1b\n" +
 	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\afeeling\x18\x03 \x01(\tR\afeeling\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\"4\n" +
-	"\rFetchResponse\x12#\n" +
-	"\x04logs\x18\x01 \x03(\v2\x0f.proto.LogEntryR\x04logs2D\n" +
+	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\"'\n" +
+	"\vAddResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"3\n" +
+	"\rFetchResponse\x12\"\n" +
+	"\x04logs\x18\x01 \x03(\v2\x0e.logs.LogEntryR\x04logs2p\n" +
 	"\n" +
-	"LogService\x126\n" +
-	"\tFetchLogs\x12\x13.proto.FetchRequest\x1a\x14.proto.FetchResponseB$Z\"github.com/gensan0223/snulog/protob\x06proto3"
+	"LogService\x12,\n" +
+	"\aAddLogs\x12\x0e.logs.LogEntry\x1a\x11.logs.AddResponse\x124\n" +
+	"\tFetchLogs\x12\x12.logs.FetchRequest\x1a\x13.logs.FetchResponseB\bZ\x06/protob\x06proto3"
 
 var (
 	file_proto_logs_proto_rawDescOnce sync.Once
@@ -207,18 +254,21 @@ func file_proto_logs_proto_rawDescGZIP() []byte {
 	return file_proto_logs_proto_rawDescData
 }
 
-var file_proto_logs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_logs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_logs_proto_goTypes = []any{
-	(*FetchRequest)(nil),  // 0: proto.FetchRequest
-	(*LogEntry)(nil),      // 1: proto.LogEntry
-	(*FetchResponse)(nil), // 2: proto.FetchResponse
+	(*FetchRequest)(nil),  // 0: logs.FetchRequest
+	(*LogEntry)(nil),      // 1: logs.LogEntry
+	(*AddResponse)(nil),   // 2: logs.AddResponse
+	(*FetchResponse)(nil), // 3: logs.FetchResponse
 }
 var file_proto_logs_proto_depIdxs = []int32{
-	1, // 0: proto.FetchResponse.logs:type_name -> proto.LogEntry
-	0, // 1: proto.LogService.FetchLogs:input_type -> proto.FetchRequest
-	2, // 2: proto.LogService.FetchLogs:output_type -> proto.FetchResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
+	1, // 0: logs.FetchResponse.logs:type_name -> logs.LogEntry
+	1, // 1: logs.LogService.AddLogs:input_type -> logs.LogEntry
+	0, // 2: logs.LogService.FetchLogs:input_type -> logs.FetchRequest
+	2, // 3: logs.LogService.AddLogs:output_type -> logs.AddResponse
+	3, // 4: logs.LogService.FetchLogs:output_type -> logs.FetchResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -235,7 +285,7 @@ func file_proto_logs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_logs_proto_rawDesc), len(file_proto_logs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

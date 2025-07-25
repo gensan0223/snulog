@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/gensan0223/snulog/internal/repository"
 	"github.com/gensan0223/snulog/internal/usecase"
 	pb "github.com/gensan0223/snulog/proto"
 
@@ -30,8 +31,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	repo := repository.NewInMemoryLogRepository()
+	uc := usecase.NewLogUsecase(repo)
 	srv := &logServer{
-		usecase: usecase.NewLogUsecase(),
+		usecase: uc,
 	}
 
 	grpcServer := grpc.NewServer()

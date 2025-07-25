@@ -11,34 +11,23 @@ import (
 	"google.golang.org/grpc"
 )
 
-type mockLogServer struct {
+type logServer struct {
 	pb.UnimplementedLogServiceServer
+	logs []*pb.LogEntry
 }
 
-func (s *mockLogServer) AddLogs(ctx context.Context, entry *pb.LogEntry) (*pb.AddResponse, error) {
+func (s *logServer) AddLogs(ctx context.Context, entry *pb.LogEntry) (*pb.AddResponse, error) {
+	s.logs = append(s.logs, entry)
 	log.Printf("Received AddLog entry: %+v", entry)
 
 	return &pb.AddResponse{Message: "added successfully"}, nil
 }
 
-func (s *mockLogServer) FetchLogs(ctx context.Context, req *pb.FetchRequest) (*pb.FetchResponse, error) {
-	log.Printf("Received FetchLogs request for team: %s", req.TeamId)
+func (s *logServer) FetchLogs(ctx context.Context, req *pb.FetchRequest) (*pb.FetchResponse, error) {
+	log.Printf("Received FetchLogs request")
 
 	return &pb.FetchResponse{
-		Logs: []*pb.LogEntry{
-			{
-				UserName:  "Alice",
-				Status:    "コードレビュー中",
-				Feeling:   "😀",
-				Timestamp: "2025-08-01T10:00:00Z",
-			},
-			{
-				UserName:  "Jane Doe",
-				Status:    "Working",
-				Feeling:   "🤮",
-				Timestamp: "2023-08-01T10:00:00Z",
-			},
-		},
+		Logs: s.logs,
 	}, nil
 }
 
@@ -47,9 +36,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	srv := &logServer{}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterLogServiceServer(grpcServer, &mockLogServer{})
+	pb.RegisterLogServiceServer(grpcServer, srv)
 	fmt.Printf("✅ Mock gRPC server listening on %s", lis.Addr())
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

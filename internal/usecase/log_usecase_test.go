@@ -5,12 +5,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gensan0223/snulog/internal/repository"
 	"github.com/gensan0223/snulog/proto"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAddLogsAndFetchLogs(t *testing.T) {
-	uc := NewLogUsecase()
+	repo := repository.NewInMemoryLogRepository()
+	uc := NewLogUsecase(repo)
 
 	entry := &proto.LogEntry{
 		UserName:  "tester",

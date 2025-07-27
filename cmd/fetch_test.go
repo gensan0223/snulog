@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"net"
 	"testing"
 	"time"
 
@@ -71,7 +72,13 @@ func TestFetchLogs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
-			conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+			dialer := func(context.Context, string) (net.Conn, error) {
+				return lis.Dial()
+			}
+			// nolint:staticcheck // bufconn テスト用に grpc.DialContext を使用
+			conn, err := grpc.DialContext(ctx, "bufnet",
+				grpc.WithContextDialer(dialer),
+				grpc.WithTransportCredentials(insecure.NewCredentials()))
 			if err != nil {
 				t.Fatalf("gRPC接続に失敗しました: %v", err)
 			}

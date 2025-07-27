@@ -6,10 +6,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gensan0223/snulog/internal/util"
 	"github.com/gensan0223/snulog/proto"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 )
@@ -49,10 +51,6 @@ func init() {
 	}()
 }
 
-func bufDialer(context.Context, string) (net.Conn, error) {
-	return lis.Dial()
-}
-
 func TestFetchLogs(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -74,11 +72,17 @@ func TestFetchLogs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
-			conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+			dialer := func(context.Context, string) (net.Conn, error) {
+				return lis.Dial()
+			}
+			// nolint:staticcheck // bufconn テスト用に grpc.DialContext を使用
+			conn, err := grpc.DialContext(ctx, "bufnet",
+				grpc.WithContextDialer(dialer),
+				grpc.WithTransportCredentials(insecure.NewCredentials()))
 			if err != nil {
 				t.Fatalf("gRPC接続に失敗しました: %v", err)
 			}
-			defer conn.Close()
+			defer util.CloseWithLog(conn)
 
 			client := proto.NewLogServiceClient(conn)
 

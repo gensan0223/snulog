@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gensan0223/snulog/internal/util"
 	pb "github.com/gensan0223/snulog/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -20,13 +21,6 @@ var addCmd = &cobra.Command{
 			fmt.Println("引数が足りません")
 		}
 
-		type LogEntry struct {
-			UserName  string
-			Status    string
-			Feeling   string
-			Timestamp string
-		}
-
 		entry := &pb.LogEntry{
 			UserName:  args[0],
 			Status:    args[1],
@@ -39,7 +33,7 @@ var addCmd = &cobra.Command{
 			fmt.Println("⛔gRPC接続失敗: ", err)
 			return
 		}
-		defer conn.Close()
+		defer util.CloseWithLog(conn)
 
 		conn.Connect()
 

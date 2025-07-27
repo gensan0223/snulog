@@ -1,4 +1,4 @@
-version: 2
+version: "2"
 
 linters:
   enable:
@@ -9,10 +9,4 @@ linters:
 
 run:
   timeout: 5m
-
-output:
-  formats:
-      text:
-      path: stdout
-      colors: true
 

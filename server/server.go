@@ -2,13 +2,17 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"github.com/gensan0223/snulog/internal/repository"
 	"github.com/gensan0223/snulog/internal/usecase"
 	pb "github.com/gensan0223/snulog/proto"
+
+	_ "github.com/lib/pq"
 
 	"google.golang.org/grpc"
 )
@@ -27,11 +31,19 @@ func (s *logServer) FetchLogs(ctx context.Context, req *pb.FetchRequest) (*pb.Fe
 }
 
 func main() {
+	dsn := os.Getenv("DATABASE_URL")
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatalf("failed to connect to DB: %v", err)
+	}
+	defer db.Close()
+
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	repo := repository.NewInMemoryLogRepository()
+	// repo := repository.NewInMemoryLogRepository()
+	repo := repository.NewPostgresLogRepository(db)
 	uc := usecase.NewLogUsecase(repo)
 	srv := &logServer{
 		usecase: uc,

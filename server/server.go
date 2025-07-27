@@ -10,6 +10,7 @@ import (
 
 	"github.com/gensan0223/snulog/internal/repository"
 	"github.com/gensan0223/snulog/internal/usecase"
+	"github.com/gensan0223/snulog/internal/util"
 	pb "github.com/gensan0223/snulog/proto"
 
 	_ "github.com/lib/pq"
@@ -36,7 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to DB: %v", err)
 	}
-	defer db.Close()
+	defer util.CloseWithLog(db)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {

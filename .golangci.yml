@@ -1,7 +1,4 @@
-run:
-  timeout: 5m
-issues:
-  exclude-use-default: false
+version: 2
 
 linters:
   enable:
@@ -9,8 +6,6 @@ linters:
     - govet
     - staticcheck
     - unused
-    - gosimple
-    - structcheck
-    - deadcode
-    - gocritic
 
+run:
+  timeout: 5m

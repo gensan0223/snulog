@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gensan0223/snulog/internal/util"
 	pb "github.com/gensan0223/snulog/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -21,7 +22,7 @@ var fetchCmd = &cobra.Command{
 			fmt.Println("⛔gRPC接続失敗: ", err)
 			return
 		}
-		defer conn.Close()
+		defer util.CloseWithLog(conn)
 
 		client := pb.NewLogServiceClient(conn)
 

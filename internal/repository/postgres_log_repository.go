@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/gensan0223/snulog/internal/util"
 	"github.com/gensan0223/snulog/proto"
 )
 
@@ -30,7 +31,7 @@ func (r *PostgresLogRepository) FindAll(ctx context.Context) ([]*proto.LogEntry,
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer util.CloseWithLog(rows)
 
 	var logs []*proto.LogEntry
 	for rows.Next() {

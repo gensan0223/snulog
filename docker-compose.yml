@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:15
+    container_name: snulog-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snulog-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "host=snulog-db port=5432 user=postgres password=password dbname=snulog sslmode=disable"
+    ports:
+      - "50051:50051"  # gRPCポート
+    restart: unless-stopped
+    command: ./snulog-server
+  migrate:
+    image: migrate/migrate
+    container_name: snulog-migrate
+    restart: "no"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./db/migrations:/migrations
+      - ./tmp/migrate-command.sh:/tmp/migrate-command.sh
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      /tmp/migrate-command.sh
+
+volumes:
+  db_data:

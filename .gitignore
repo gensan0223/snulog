@@ -1,0 +1,50 @@
+# Go build artifacts
+/bin/
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go cache / mod files
+*.log
+*.prof
+*.pb.go
+*.pb.gw.go
+*.pb.validate.go
+
+# Dependency directories (Go Modules)
+vendor/
+
+# IDE/editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Environment files
+.env
+.env.*
+
+# Coverage
+coverage.out
+cover.html
+
+# golangci-lint
+golangci-lint.cache/
+
+# Docker volumes
+db_data/
+tmp/
+
+# Binary
+/snulog-server
+
+# GitHub Actions
+*.lcov
+

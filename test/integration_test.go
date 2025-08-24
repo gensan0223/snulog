@@ -20,7 +20,11 @@ func TestGRPCConnection(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to connect to gRPC server: %v", err)
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			t.Logf("Failed to close connection: %v", err)
+		}
+	}()
 
 	client := pb.NewLogServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)

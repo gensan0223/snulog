@@ -24,7 +24,11 @@ var debugCmd = &cobra.Command{
 			fmt.Printf("❌ Failed to create gRPC client: %v\n", err)
 			return
 		}
-		defer conn.Close()
+		defer func() {
+			if err := conn.Close(); err != nil {
+				fmt.Printf("⚠️ Failed to close connection: %v\n", err)
+			}
+		}()
 
 		fmt.Println("✅ gRPC client created successfully")
 

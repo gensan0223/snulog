@@ -29,7 +29,11 @@ var webCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to connect to database: %v", err)
 		}
-		defer db.Close()
+		defer func() {
+			if err := db.Close(); err != nil {
+				log.Printf("Failed to close database connection: %v", err)
+			}
+		}()
 
 		webHandler := handler.NewWebHandler(grpcAddr, db)
 
@@ -39,21 +43,23 @@ var webCmd = &cobra.Command{
 		// Routes
 		http.HandleFunc("/", webHandler.ServeIndex)
 		http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-			if r.Method == http.MethodGet {
+			switch r.Method {
+			case http.MethodGet:
 				webHandler.ServeLogin(w, r)
-			} else if r.Method == http.MethodPost {
+			case http.MethodPost:
 				webHandler.HandleLogin(w, r)
-			} else {
+			default:
 				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			}
 		})
 		http.HandleFunc("/logout", webHandler.HandleLogout)
 		http.HandleFunc("/api/logs", func(w http.ResponseWriter, r *http.Request) {
-			if r.Method == http.MethodPost {
+			switch r.Method {
+			case http.MethodPost:
 				webHandler.AddLog(w, r)
-			} else if r.Method == http.MethodGet {
+			case http.MethodGet:
 				webHandler.GetLogs(w, r)
-			} else {
+			default:
 				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			}
 		})

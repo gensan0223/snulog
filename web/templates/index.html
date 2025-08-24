@@ -9,7 +9,24 @@
   </head>
   <body>
     <div class="container">
-      <h1>📝 Snulog - チーム進捗ログ</h1>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <h1>📝 Snulog - チーム進捗ログ</h1>
+        <div>
+          <span>👤 {{.Username}}</span>
+          <a
+            href="/logout"
+            style="margin-left: 16px; color: #dc3545; text-decoration: none"
+            >ログアウト</a
+          >
+        </div>
+      </div>
 
       <h2>新しいログを追加</h2>
       <form
@@ -20,7 +37,13 @@
       >
         <div class="form-group">
           <label for="user_name">ユーザー名:</label>
-          <input type="text" id="user_name" name="user_name" required />
+          <input
+            type="text"
+            id="user_name"
+            name="user_name"
+            value="{{.Username}}"
+            readonly
+          />
         </div>
 
         <div class="form-group">

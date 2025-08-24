@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snulog - チーム進捗ログ</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <h1>📝 Snulog - チーム進捗ログ</h1>
+        <div>
+          <span>👤 {{.Username}}</span>
+          <a
+            href="/logout"
+            style="margin-left: 16px; color: #dc3545; text-decoration: none"
+            >ログアウト</a
+          >
+        </div>
+      </div>
+
+      <h2>新しいログを追加</h2>
+      <form
+        hx-post="/api/logs"
+        hx-target="#message"
+        hx-trigger="submit"
+        hx-on::after-request="this.reset(); htmx.trigger('#logs-container', 'refresh')"
+      >
+        <div class="form-group">
+          <label for="user_name">ユーザー名:</label>
+          <input
+            type="text"
+            id="user_name"
+            name="user_name"
+            value="{{.Username}}"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="status">ステータス:</label>
+          <input
+            type="text"
+            id="status"
+            name="status"
+            placeholder="例: working, reviewing, debugging"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="feeling">気分:</label>
+          <input
+            type="text"
+            id="feeling"
+            name="feeling"
+            placeholder="例: 😊, 🤔, 😤, 🎉"
+            required
+          />
+        </div>
+
+        <button type="submit">ログを追加</button>
+      </form>
+
+      <div id="message"></div>
+    </div>
+
+    <div class="container">
+      <h2>最新のログ</h2>
+      <div
+        id="logs-container"
+        hx-get="/api/logs"
+        hx-trigger="load, refresh from:body"
+      >
+        <p>ログを読み込み中...</p>
+      </div>
+    </div>
+  </body>
+</html>
